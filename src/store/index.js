@@ -15,20 +15,31 @@ export default createStore({
   },
   actions: { //para poder usar las mutations tenemos que usar las actions
     async getCharacters({commit}) { //funcion asincrona para poder traernos los personajes y recibe el parámetro commit para poder acceder a las mutations
-    try{
+    try {
       const response = await fetch('https://rickandmortyapi.com/api/character')
       const data = await response.json()
       commit('setCharacters',data.results)
       commit('setCharactersFilter',data.results)
-    }catch(error){
-      console.error(error)
-    }
+    } catch(error){
+        console.error(error)
+      }
   },
   filterByStatus({commit, state}, status){
-    const results = state.characters.filter((character) => {
+    const filter = state.characters.filter((character) => {
       return character.status.includes(status)
     })
-    commit('setCharactersFilter', results)
+    commit('setCharactersFilter', filter)
+  },
+filterByName({commit, state}, name) {
+    const formatName = name.toLowerCase()
+    const filter = state.characters.filter((character) => {
+      const characterName = character.name.toLowerCase()
+
+        if(characterName.includes(formatName)) {
+          return character
+        }
+    })
+    commit('setCharactersFilter', filter)
   }
 },
   modules: {
